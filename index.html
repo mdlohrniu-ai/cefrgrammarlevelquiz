@@ -151,7 +151,7 @@ body{
     </span>
     <button class="btn" onclick="startQuizFromLogin()">Start Test</button>
   </div>
-  <span class="teacher-link" onclick="openTeacherModal()">Teacher view →</span>
+
 </div>
 
 <!-- QUIZ -->
@@ -182,21 +182,14 @@ body{
   </div>
   <div class="score-pill">Score: <strong><span id="result-score">0</span> / <span id="result-total">10</span></strong></div>
   <p style="color:var(--ink-soft);font-size:.85rem;">You may now close this tab.</p>
-  <button class="btn btn-ghost btn-sm" onclick="openTeacherModal()">Teacher view</button>
+  <button class="btn btn-ghost btn-sm" onclick="openDetailsModal()">Details</button>
 </div>
 
 <!-- TEACHER MODAL -->
 <div id="teacher-modal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeTeacherModal()">✕</button>
-    <div id="pw-prompt">
-      <h3 style="font-family:'DM Serif Display',serif;font-size:1.5rem;">Teacher Access</h3>
-      <p style="font-size:.85rem;color:var(--ink-soft);">Enter the teacher password to view results.</p>
-      <input type="password" id="pw-input" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()">
-      <span id="pw-error"></span>
-      <button class="btn btn-sm" onclick="checkPassword()">View Results</button>
-    </div>
-    <div id="teacher-results" style="display:none;">
+    <div id="teacher-results">
       <h3 style="font-family:'DM Serif Display',serif;font-size:1.4rem;margin-bottom:.3rem;">
         Results — <span id="t-student-name"></span>
       </h3>
@@ -223,7 +216,7 @@ var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4rUnSORKmCPNtW_t6mIJ
 var CFG = null, BANK = {}, quizQuestions = [], answers = [];
 var currentQ = 0, selected = null;
 var studentName = '', studentNumber = '';
-var lastResults = null, teacherUnlocked = false;
+var lastResults = null;
 var LEVELS = ['A1','A2','B1','B2','C1'];
 var DEFAULT_CFG = {
   totalQuestions:10, perLevel:{A1:2,A2:2,B1:2,B2:2,C1:2},
@@ -401,36 +394,12 @@ function showResults(){
   show('result-student');
 }
 
-// ── TEACHER MODAL ─────────────────────────────────────────────────────────────
-function openTeacherModal(){
+// ── DETAILS MODAL ─────────────────────────────────────────────────────────────
+function openDetailsModal(){
   document.getElementById('teacher-modal').classList.add('open');
-  document.getElementById('pw-input').value = '';
-  document.getElementById('pw-error').textContent = '';
-  if(teacherUnlocked && lastResults){
-    document.getElementById('pw-prompt').style.display = 'none';
-    showTeacherResults();
-  } else {
-    document.getElementById('pw-prompt').style.display = 'flex';
-    document.getElementById('teacher-results').style.display = 'none';
-  }
-  setTimeout(function(){ document.getElementById('pw-input').focus(); }, 50);
+  showTeacherResults();
 }
 function closeTeacherModal(){ document.getElementById('teacher-modal').classList.remove('open'); }
-function checkPassword(){
-  var pw = document.getElementById('pw-input').value;
-  var ok = CFG ? CFG.teacherPassword : DEFAULT_CFG.teacherPassword;
-  if(pw === ok){
-    teacherUnlocked = true;
-    document.getElementById('pw-error').textContent = '';
-    document.getElementById('pw-prompt').style.display = 'none';
-    if(lastResults) showTeacherResults();
-    else{
-      document.getElementById('teacher-results').style.display = 'block';
-      document.getElementById('teacher-results').innerHTML =
-        '<p style="color:var(--ink-soft);font-size:.9rem;padding:1rem 0;">No results yet — a student must complete the quiz first.</p>';
-    }
-  } else document.getElementById('pw-error').textContent = 'Incorrect password.';
-}
 function showTeacherResults(){
   document.getElementById('teacher-results').style.display = 'block';
   var r = lastResults;
