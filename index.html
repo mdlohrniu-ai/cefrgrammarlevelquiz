@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Grammar Placement Test</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #f5f0e8;
+  --card:     #fffdf8;
+  --ink:      #1a1208;
+  --ink-soft: #6b5f4a;
+  --accent:   #c84b2f;
+  --accent-lt:#f5ddd8;
+  --green:    #3a7d44;
+  --border:   #e0d5c0;
+  --A1:#4a90d9; --A2:#5ba85e; --B1:#d4a847; --B2:#e07840; --C1:#b44dc4;
+  --radius:   0.75rem;
+  --shadow:   0 2px 24px rgba(26,18,8,0.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);color:var(--ink);min-height:100vh;
+  background-image:
+    radial-gradient(circle at 15% 15%,rgba(200,75,47,.06) 0%,transparent 50%),
+    radial-gradient(circle at 85% 85%,rgba(212,168,71,.08) 0%,transparent 50%);
+}
+.screen{display:none;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;}
+.fade-in{animation:fadeUp .4s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* Shared */
+.badge-pill{display:inline-block;background:var(--accent);color:#fff;font-size:.7rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;padding:.35rem 1rem;border-radius:2rem;}
+.btn{background:var(--accent);color:#fff;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;padding:.9rem 2.5rem;border-radius:.5rem;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 16px rgba(200,75,47,.3);}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(200,75,47,.4);}
+.btn:active{transform:translateY(0);}
+.btn-ghost{background:transparent;color:var(--ink-soft);border:1.5px solid var(--border);box-shadow:none;font-weight:500;}
+.btn-ghost:hover{background:var(--border);box-shadow:none;color:var(--ink);}
+.btn-sm{padding:.6rem 1.4rem;font-size:.9rem;}
+
+/* Loading */
+#loading{gap:1.5rem;text-align:center;}
+.spinner{width:44px;height:44px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--accent);animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-msg{color:var(--ink-soft);font-size:.95rem;}
+.loading-err{color:var(--accent);font-size:.9rem;max-width:420px;line-height:1.7;text-align:center;}
+
+/* Login */
+#login{gap:1.6rem;text-align:center;}
+.login-card{background:var(--card);border:1.5px solid var(--border);border-radius:1.2rem;padding:2rem 2.5rem;width:100%;max-width:420px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:1.2rem;}
+.field-group{display:grid;grid-template-columns:130px 1fr;gap:.7rem 1rem;align-items:center;}
+.field-group label{font-size:.85rem;font-weight:500;color:var(--ink-soft);text-align:right;}
+.field-group input{padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:.5rem;font-family:'DM Sans',sans-serif;font-size:1rem;background:var(--bg);color:var(--ink);outline:none;transition:border-color .15s;}
+.field-group input:focus{border-color:var(--accent);}
+.error-msg{font-size:.8rem;color:var(--accent);}
+.teacher-link{font-size:.8rem;color:var(--ink-soft);cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+
+/* Quiz */
+#quiz{justify-content:flex-start;padding-top:1.5rem;gap:0;}
+.quiz-header{width:100%;max-width:720px;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;}
+.q-counter{font-size:.85rem;color:var(--ink-soft);font-weight:500;}
+.progress-bar{width:100%;max-width:720px;height:4px;background:var(--border);border-radius:4px;margin-bottom:2rem;overflow:hidden;}
+.progress-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .4s ease;}
+.question-card{background:var(--card);border:1.5px solid var(--border);border-radius:1.2rem;padding:2rem 2.5rem;width:100%;max-width:720px;box-shadow:var(--shadow);}
+.q-text{font-family:'DM Serif Display',serif;font-size:1.3rem;line-height:1.55;margin-bottom:1.8rem;color:var(--ink);}
+.q-text .blank{display:inline-block;border-bottom:3px solid var(--accent);min-width:90px;vertical-align:bottom;line-height:1;margin-bottom:2px;}
+.options{display:flex;flex-direction:column;gap:.7rem;}
+.option{display:flex;align-items:center;gap:1rem;padding:.8rem 1.2rem;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;background:#fff;transition:all .15s;font-size:.95rem;}
+.option:hover{border-color:var(--accent);background:var(--accent-lt);}
+.option.selected{border-color:var(--accent);background:var(--accent-lt);}
+.option-idk{border-style:dashed;color:var(--ink-soft);}
+.option-idk .option-letter{border-style:dashed;}
+.option-letter{width:28px;height:28px;min-width:28px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;color:var(--ink-soft);transition:all .15s;}
+.option.selected .option-letter{background:var(--accent);border-color:var(--accent);color:#fff;}
+.quiz-nav{width:100%;max-width:720px;display:flex;justify-content:flex-end;margin-top:1.5rem;}
+
+/* Result */
+#result-student{gap:2rem;text-align:center;}
+.cefr-badge{width:140px;height:140px;border-radius:50%;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;box-shadow:0 8px 40px rgba(0,0,0,.15);}
+.cefr-badge .level-text{font-size:3rem;line-height:1;color:#fff;}
+.cefr-badge .level-sub{font-size:.65rem;letter-spacing:.1em;color:rgba(255,255,255,.85);text-transform:uppercase;font-family:'DM Sans',sans-serif;}
+.score-pill{background:var(--card);border:1.5px solid var(--border);border-radius:3rem;padding:.5rem 1.5rem;font-size:.9rem;color:var(--ink-soft);}
+.score-pill strong{color:var(--ink);}
+
+/* Teacher modal */
+#teacher-modal{display:none;position:fixed;inset:0;background:rgba(26,18,8,.55);backdrop-filter:blur(4px);z-index:100;align-items:center;justify-content:center;padding:1rem;}
+#teacher-modal.open{display:flex;}
+.modal-box{background:var(--card);border:1.5px solid var(--border);border-radius:1.4rem;padding:2rem;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;box-shadow:0 16px 60px rgba(0,0,0,.2);position:relative;}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;cursor:pointer;font-size:1.4rem;color:var(--ink-soft);line-height:1;}
+.modal-close:hover{color:var(--ink);}
+.teacher-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0;}
+.t-card{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.2rem;}
+.t-card h4{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.4rem;}
+.t-card .t-val{font-family:'DM Serif Display',serif;font-size:1.6rem;}
+.level-breakdown{display:grid;grid-template-columns:repeat(5,1fr);gap:.6rem;margin:1rem 0;}
+.lv-card{border-radius:.6rem;padding:.7rem .5rem;text-align:center;}
+.lv-card .lv-name{font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#fff;opacity:.9;}
+.lv-card .lv-score{font-size:1.2rem;font-weight:700;color:#fff;font-family:'DM Serif Display',serif;}
+.lv-card .lv-pct{font-size:.7rem;color:rgba(255,255,255,.8);}
+.q-detail-list{display:flex;flex-direction:column;gap:.4rem;margin-top:.8rem;}
+.q-detail{display:grid;grid-template-columns:auto 1fr auto auto;gap:.5rem .8rem;align-items:center;font-size:.8rem;padding:.5rem .8rem;border-radius:.5rem;background:var(--bg);border:1px solid var(--border);}
+.q-detail .q-lv-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.q-detail .q-topic{color:var(--ink-soft);}
+.q-detail .q-ans{font-weight:600;}
+#pw-prompt{display:flex;flex-direction:column;gap:1rem;align-items:center;padding:1rem 0;}
+#pw-prompt input{padding:.7rem 1rem;border:1.5px solid var(--border);border-radius:.5rem;font-family:'DM Sans',sans-serif;font-size:1rem;background:var(--bg);color:var(--ink);outline:none;width:220px;text-align:center;letter-spacing:.15em;}
+#pw-prompt input:focus{border-color:var(--accent);}
+#pw-error{font-size:.8rem;color:var(--accent);min-height:1em;}
+
+@media(max-width:600px){
+  .question-card{padding:1.5rem;} .q-text{font-size:1.1rem;}
+  .teacher-grid{grid-template-columns:1fr;} .level-breakdown{grid-template-columns:repeat(3,1fr);}
+  .q-detail{grid-template-columns:auto 1fr auto;} .login-card{padding:1.5rem;}
+  .field-group{grid-template-columns:1fr;} .field-group label{text-align:left;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="screen active" id="loading">
+  <div class="spinner"></div>
+  <p class="loading-msg" id="loading-msg">Loading question bank…</p>
+</div>
+
+<!-- LOGIN -->
+<div class="screen" id="login">
+  <span class="badge-pill" id="login-badge">CEFR Grammar Assessment</span>
+  <h1 style="font-family:'DM Serif Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.1;text-align:center;max-width:500px;">
+    Ready to find your <em style="color:var(--accent);font-style:italic;">level?</em>
+  </h1>
+  <p style="color:var(--ink-soft);max-width:380px;line-height:1.65;font-size:.9rem;text-align:center;">
+    Answer as best you can — no books or searching. Choose
+    <strong style="color:var(--ink)">E — I don't know</strong> if you're unsure rather than guessing.
+  </p>
+  <div class="login-card">
+    <p id="login-q-count" style="font-size:.85rem;color:var(--ink-soft);text-align:center;margin-bottom:-.3rem;"></p>
+    <div class="field-group">
+      <label for="student-number">Student number</label>
+      <input type="text" id="student-number" placeholder="e.g. S001"
+        onkeydown="if(event.key==='Enter')document.getElementById('student-name').focus()">
+      <label for="student-name">Your name</label>
+      <input type="text" id="student-name" placeholder="Enter your name"
+        onkeydown="if(event.key==='Enter')startQuizFromLogin()">
+    </div>
+    <span class="error-msg" id="name-error" style="display:none;text-align:center;">
+      Please enter your student number and name to begin.
+    </span>
+    <button class="btn" onclick="startQuizFromLogin()">Start Test</button>
+  </div>
+  <span class="teacher-link" onclick="openTeacherModal()">Teacher view →</span>
+</div>
+
+<!-- QUIZ -->
+<div class="screen" id="quiz">
+  <div class="quiz-header">
+    <span class="q-counter" id="q-counter">Question 1 of 10</span>
+    <span style="font-size:.85rem;color:var(--ink-soft);" id="q-level-tag"></span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  <div class="question-card fade-in" id="question-card">
+    <p class="q-text" id="q-text"></p>
+    <div class="options" id="options"></div>
+  </div>
+  <div class="quiz-nav">
+    <button class="btn" id="next-btn" onclick="nextQuestion()" style="display:none">Next →</button>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div class="screen" id="result-student">
+  <div class="cefr-badge" id="result-badge">
+    <span class="level-text" id="result-level-text"></span>
+    <span class="level-sub"  id="result-level-sub"></span>
+  </div>
+  <div>
+    <h2 id="result-headline" style="font-family:'DM Serif Display',serif;font-size:2rem;text-align:center;"></h2>
+    <p style="color:var(--ink-soft);font-size:.9rem;text-align:center;margin-top:.3rem;">Your CEFR placement result</p>
+  </div>
+  <div class="score-pill">Score: <strong><span id="result-score">0</span> / <span id="result-total">10</span></strong></div>
+  <p style="color:var(--ink-soft);font-size:.85rem;">You may now close this tab.</p>
+  <button class="btn btn-ghost btn-sm" onclick="openTeacherModal()">Teacher view</button>
+</div>
+
+<!-- TEACHER MODAL -->
+<div id="teacher-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeTeacherModal()">✕</button>
+    <div id="pw-prompt">
+      <h3 style="font-family:'DM Serif Display',serif;font-size:1.5rem;">Teacher Access</h3>
+      <p style="font-size:.85rem;color:var(--ink-soft);">Enter the teacher password to view results.</p>
+      <input type="password" id="pw-input" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()">
+      <span id="pw-error"></span>
+      <button class="btn btn-sm" onclick="checkPassword()">View Results</button>
+    </div>
+    <div id="teacher-results" style="display:none;">
+      <h3 style="font-family:'DM Serif Display',serif;font-size:1.4rem;margin-bottom:.3rem;">
+        Results — <span id="t-student-name"></span>
+      </h3>
+      <p style="font-size:.8rem;color:var(--ink-soft);margin-bottom:.8rem;">Student #<span id="t-student-num"></span></p>
+      <div class="teacher-grid">
+        <div class="t-card"><h4>Method A (Threshold)</h4><div class="t-val" id="t-method-a"></div><div style="font-size:.75rem;color:var(--ink-soft);margin-top:.2rem;">≥ <span id="t-threshold"></span>% per level</div></div>
+        <div class="t-card"><h4>Method B (Weighted)</h4><div class="t-val" id="t-method-b"></div><div style="font-size:.75rem;color:var(--ink-soft);margin-top:.2rem;">Weighted score</div></div>
+        <div class="t-card"><h4>Recommended Level</h4><div class="t-val" id="t-recommended" style="font-size:2rem;"></div></div>
+        <div class="t-card"><h4>Raw Score</h4><div class="t-val" id="t-raw-score"></div><div style="font-size:.75rem;color:var(--ink-soft);margin-top:.2rem;"><span id="t-idk-count">0</span> "I don't know"</div></div>
+      </div>
+      <h4 style="font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.6rem;">Per-level accuracy</h4>
+      <div class="level-breakdown" id="t-level-breakdown"></div>
+      <h4 style="font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin:.8rem 0 .5rem;">Question detail</h4>
+      <div class="q-detail-list" id="t-q-detail"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG — paste your deployed Apps Script URL here ─────────────────────────
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4rUnSORKmCPNtW_t6mIJnWLk2_xhtF7boS0_gR-lR2zYiPROcWmWkmNDr_o2zHtNEHw/exec';
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+var CFG = null, BANK = {}, quizQuestions = [], answers = [];
+var currentQ = 0, selected = null;
+var studentName = '', studentNumber = '';
+var lastResults = null, teacherUnlocked = false;
+var LEVELS = ['A1','A2','B1','B2','C1'];
+var DEFAULT_CFG = {
+  totalQuestions:10, perLevel:{A1:2,A2:2,B1:2,B2:2,C1:2},
+  weights:{A1:1,A2:2,B1:3,B2:4,C1:5}, threshold:70, method:'average',
+  quizTitle:'CEFR Grammar Assessment',
+  levelNames:{A1:'Beginner',A2:'Elementary',B1:'Intermediate',B2:'Upper Intermediate',C1:'Advanced'},
+  levelColors:{A1:'#4a90d9',A2:'#5ba85e',B1:'#d4a847',B2:'#e07840',C1:'#b44dc4'},
+  teacherPassword:'teacher123'
+};
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+window.addEventListener('load', function() {
+  if (SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    showLoadError('No Apps Script URL set.<br>Add your deployed URL to the SCRIPT_URL variable in the HTML.');
+    return;
+  }
+  setLoadMsg('Loading question bank…');
+  fetch(SCRIPT_URL)
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(function(json){
+      if(json.status !== 'ok') throw new Error(json.message || 'Script returned an error');
+      applyData(json.data);
+    })
+    .catch(function(err){
+      showLoadError('Could not load question bank.<br><br>' + err.message +
+        '<br><br>Make sure the Apps Script is deployed as a web app with access set to <strong>Anyone</strong>.');
+    });
+});
+
+function setLoadMsg(m){ document.getElementById('loading-msg').textContent = m; }
+function showLoadError(html){
+  document.getElementById('loading').innerHTML =
+    '<p class="loading-err">' + html + '</p>' +
+    '<button class="btn btn-sm" style="margin-top:.8rem" onclick="location.reload()">Try again</button>';
+}
+
+function applyData(data) {
+  CFG  = data.cfg;
+  BANK = data.bank;
+
+  // Apply level colours to CSS vars
+  LEVELS.forEach(function(lv){
+    document.documentElement.style.setProperty('--'+lv, '#'+CFG.levelColors[lv]);
+  });
+
+  document.getElementById('login-badge').textContent = CFG.quizTitle;
+  var qTotal = LEVELS.reduce(function(s,lv){ return s + (CFG.perLevel[lv]||0); }, 0);
+  document.getElementById('login-q-count').textContent = qTotal + ' questions · A1 through C1';
+  show('login');
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function show(id){
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  var el = document.getElementById(id);
+  el.classList.add('active'); el.classList.remove('fade-in'); void el.offsetWidth; el.classList.add('fade-in');
+}
+function shuffle(arr){
+  var a = arr.slice();
+  for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)), t=a[i]; a[i]=a[j]; a[j]=t; }
+  return a;
+}
+function lvColor(lv){ return '#' + CFG.levelColors[lv]; }
+
+// ── LOGIN ─────────────────────────────────────────────────────────────────────
+function startQuizFromLogin(){
+  var nEl = document.getElementById('student-number'), mEl = document.getElementById('student-name');
+  var n = nEl.value.trim(), m = mEl.value.trim();
+  if(!n||!m){ document.getElementById('name-error').style.display='block'; (!n?nEl:mEl).focus(); return; }
+  document.getElementById('name-error').style.display = 'none';
+  studentNumber = n; studentName = m;
+  buildQuiz(); show('quiz'); renderQuestion();
+}
+
+// ── QUIZ ──────────────────────────────────────────────────────────────────────
+function buildQuiz(){
+  quizQuestions = [];
+  LEVELS.forEach(function(lv){
+    var pool = shuffle(BANK[lv] || []).slice(0, CFG.perLevel[lv] || 0);
+    quizQuestions = quizQuestions.concat(pool);
+  });
+  quizQuestions = shuffle(quizQuestions).map(function(q){
+    var idx = shuffle([0,1,2,3].slice(0, q.options.length));
+    return Object.assign({}, q, { options: idx.map(function(i){ return q.options[i]; }), answer: idx.indexOf(q.answer) });
+  });
+  answers = new Array(quizQuestions.length).fill(null);
+  currentQ = 0; selected = null; lastResults = null;
+  document.getElementById('result-total').textContent = quizQuestions.length;
+}
+
+function renderQuestion(){
+  var q = quizQuestions[currentQ], tot = quizQuestions.length;
+  document.getElementById('q-counter').textContent = 'Question ' + (currentQ+1) + ' of ' + tot;
+  document.getElementById('progress-fill').style.width = ((currentQ/tot)*100) + '%';
+  var card = document.getElementById('question-card');
+  card.classList.remove('fade-in'); void card.offsetWidth; card.classList.add('fade-in');
+  document.getElementById('q-text').innerHTML =
+    q.q.replace(/________/g, '<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>');
+  var od = document.getElementById('options'); od.innerHTML = '';
+  q.options.concat(["I don't know"]).forEach(function(opt, i){
+    var el = document.createElement('div');
+    el.className = 'option' + (i === q.options.length ? ' option-idk' : '');
+    el.innerHTML = '<span class="option-letter">' + 'ABCDE'[i] + '</span><span>' + opt + '</span>';
+    el.onclick = (function(idx){ return function(){ selectOption(idx); }; })(i);
+    od.appendChild(el);
+  });
+  selected = answers[currentQ];
+  document.getElementById('next-btn').style.display = selected !== null ? 'block' : 'none';
+  if(selected !== null) highlight(selected);
+}
+
+function selectOption(i){
+  selected = i; answers[currentQ] = i; highlight(i);
+  document.getElementById('next-btn').style.display = 'block';
+}
+function highlight(chosen){
+  document.querySelectorAll('.option').forEach(function(el, i){
+    el.classList.toggle('selected', i === chosen);
+    el.querySelector('.option-letter').textContent = 'ABCDE'[i];
+  });
+}
+function nextQuestion(){
+  if(selected === null) return;
+  currentQ++;
+  if(currentQ >= quizQuestions.length){ showResults(); return; }
+  selected = answers[currentQ] !== undefined ? answers[currentQ] : null;
+  document.getElementById('next-btn').style.display = selected !== null ? 'block' : 'none';
+  renderQuestion();
+}
+
+// ── SCORING ───────────────────────────────────────────────────────────────────
+function calcResults(){
+  var byLevel = {}, totalScore = 0, ws = 0, mw = 0, idk = 0;
+  LEVELS.forEach(function(lv){ byLevel[lv] = {correct:0, total:0}; });
+  quizQuestions.forEach(function(q, i){
+    byLevel[q.level].total++;
+    var w = CFG.weights[q.level] || 1; mw += w;
+    if(answers[i] === q.options.length) idk++;
+    else if(answers[i] === q.answer){ byLevel[q.level].correct++; totalScore++; ws += w; }
+  });
+  var tp = (CFG.threshold||70)/100, methodA = 'A1';
+  LEVELS.forEach(function(lv){
+    if(byLevel[lv].total>0 && byLevel[lv].correct/byLevel[lv].total >= tp) methodA = lv;
+  });
+  var pct = mw > 0 ? ws/mw : 0;
+  var methodB = pct>=0.88?'C1':pct>=0.72?'B2':pct>=0.55?'B1':pct>=0.38?'A2':'A1';
+  var m = (CFG.method||'average').toLowerCase(), rec;
+  if(m==='method_a') rec = methodA;
+  else if(m==='method_b') rec = methodB;
+  else rec = LEVELS[Math.round((LEVELS.indexOf(methodA)+LEVELS.indexOf(methodB))/2)];
+  return { byLevel:byLevel, totalScore:totalScore, methodA:methodA, methodB:methodB, recommended:rec, idkCount:idk };
+}
+
+function submitResults(r){
+  fetch(SCRIPT_URL, {
+    method:'POST', mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      timestamp:new Date().toISOString(), studentNumber:studentNumber, studentName:studentName,
+      recommended:r.recommended, totalScore:r.totalScore, totalQuestions:quizQuestions.length,
+      methodA:r.methodA, methodB:r.methodB, byLevel:r.byLevel, idkCount:r.idkCount
+    })
+  }).catch(function(e){ console.warn('Submit failed:', e); });
+}
+
+function showResults(){
+  var r = calcResults(); lastResults = r; submitResults(r);
+  var col = lvColor(r.recommended);
+  document.getElementById('result-badge').style.background =
+    'radial-gradient(circle at 30% 30%,'+col+'dd,'+col+'99)';
+  document.getElementById('result-level-text').textContent = r.recommended;
+  document.getElementById('result-level-sub').textContent  = CFG.levelNames[r.recommended];
+  document.getElementById('result-headline').textContent   = CFG.levelNames[r.recommended];
+  document.getElementById('result-score').textContent      = r.totalScore;
+  show('result-student');
+}
+
+// ── TEACHER MODAL ─────────────────────────────────────────────────────────────
+function openTeacherModal(){
+  document.getElementById('teacher-modal').classList.add('open');
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-error').textContent = '';
+  if(teacherUnlocked && lastResults){
+    document.getElementById('pw-prompt').style.display = 'none';
+    showTeacherResults();
+  } else {
+    document.getElementById('pw-prompt').style.display = 'flex';
+    document.getElementById('teacher-results').style.display = 'none';
+  }
+  setTimeout(function(){ document.getElementById('pw-input').focus(); }, 50);
+}
+function closeTeacherModal(){ document.getElementById('teacher-modal').classList.remove('open'); }
+function checkPassword(){
+  var pw = document.getElementById('pw-input').value;
+  var ok = CFG ? CFG.teacherPassword : DEFAULT_CFG.teacherPassword;
+  if(pw === ok){
+    teacherUnlocked = true;
+    document.getElementById('pw-error').textContent = '';
+    document.getElementById('pw-prompt').style.display = 'none';
+    if(lastResults) showTeacherResults();
+    else{
+      document.getElementById('teacher-results').style.display = 'block';
+      document.getElementById('teacher-results').innerHTML =
+        '<p style="color:var(--ink-soft);font-size:.9rem;padding:1rem 0;">No results yet — a student must complete the quiz first.</p>';
+    }
+  } else document.getElementById('pw-error').textContent = 'Incorrect password.';
+}
+function showTeacherResults(){
+  document.getElementById('teacher-results').style.display = 'block';
+  var r = lastResults;
+  document.getElementById('t-student-name').textContent = studentName;
+  document.getElementById('t-student-num').textContent  = studentNumber;
+  document.getElementById('t-method-a').textContent     = r.methodA;
+  document.getElementById('t-method-b').textContent     = r.methodB;
+  document.getElementById('t-idk-count').textContent    = r.idkCount;
+  document.getElementById('t-threshold').textContent    = CFG.threshold;
+  document.getElementById('t-raw-score').textContent    = r.totalScore + ' / ' + quizQuestions.length;
+  var re = document.getElementById('t-recommended');
+  re.textContent = r.recommended; re.style.color = lvColor(r.recommended);
+  var bd = document.getElementById('t-level-breakdown'); bd.innerHTML = '';
+  LEVELS.forEach(function(lv){
+    var b = r.byLevel[lv], pct = b.total>0 ? Math.round(b.correct/b.total*100) : 0;
+    var c = document.createElement('div'); c.className = 'lv-card';
+    c.style.background = lvColor(lv);
+    c.innerHTML = '<div class="lv-name">'+lv+'</div><div class="lv-score">'+b.correct+'/'+b.total+'</div><div class="lv-pct">'+pct+'%</div>';
+    bd.appendChild(c);
+  });
+  var dl = document.getElementById('t-q-detail'); dl.innerHTML = '';
+  quizQuestions.forEach(function(q, i){
+    var ans = answers[i], isIDK = ans===q.options.length, isRight = !isIDK && ans===q.answer;
+    var sa  = isIDK ? "I don't know" : (q.options[ans] !== undefined ? q.options[ans] : '—');
+    var ac  = isRight ? 'var(--green)' : isIDK ? 'var(--ink-soft)' : 'var(--accent)';
+    var row = document.createElement('div'); row.className = 'q-detail';
+    row.innerHTML =
+      '<span class="q-lv-dot" style="background:'+lvColor(q.level)+'"></span>'+
+      '<span class="q-topic">'+(q.topic||q.level)+'</span>'+
+      '<span class="q-ans" style="color:'+ac+'">'+sa+'</span>'+
+      '<span>'+(isRight?'✓':isIDK?'?':'✗')+'</span>';
+    dl.appendChild(row);
+  });
+}
+document.getElementById('teacher-modal').addEventListener('click', function(e){
+  if(e.target === document.getElementById('teacher-modal')) closeTeacherModal();
+});
+</script>
+</body>
+</html>
