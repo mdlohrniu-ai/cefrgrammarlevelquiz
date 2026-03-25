@@ -180,9 +180,9 @@ body{
     <h2 id="result-headline" style="font-family:'DM Serif Display',serif;font-size:2rem;text-align:center;"></h2>
     <p style="color:var(--ink-soft);font-size:.9rem;text-align:center;margin-top:.3rem;">Your CEFR placement result</p>
   </div>
-  <div class="score-pill">Score: <strong><span id="result-score">0</span> / <span id="result-total">10</span></strong></div>
+  <div id="score-pill-wrap"><div class="score-pill">Score: <strong><span id="result-score">0</span> / <span id="result-total">10</span></strong></div></div>
   <p style="color:var(--ink-soft);font-size:.85rem;">You may now close this tab.</p>
-  <button class="btn btn-ghost btn-sm" onclick="openDetailsModal()">Details</button>
+  <div id="details-btn-wrap"><button class="btn btn-ghost btn-sm" onclick="openDetailsModal()">Details</button></div>
 </div>
 
 <!-- TEACHER MODAL -->
@@ -224,7 +224,9 @@ var DEFAULT_CFG = {
   quizTitle:'CEFR Grammar Assessment',
   levelNames:{A1:'Beginner',A2:'Elementary',B1:'Intermediate',B2:'Upper Intermediate',C1:'Advanced'},
   levelColors:{A1:'#4a90d9',A2:'#5ba85e',B1:'#d4a847',B2:'#e07840',C1:'#b44dc4'},
-  teacherPassword:'teacher123'
+  teacherPassword:'teacher123',
+  showScore:true,
+  showDetails:true
 };
 
 // ── BOOT ──────────────────────────────────────────────────────────────────────
@@ -391,6 +393,8 @@ function showResults(){
   document.getElementById('result-level-sub').textContent  = CFG.levelNames[r.recommended];
   document.getElementById('result-headline').textContent   = CFG.levelNames[r.recommended];
   document.getElementById('result-score').textContent      = r.totalScore;
+  document.getElementById('score-pill-wrap').style.display  = CFG.showScore   === false ? 'none' : '';
+  document.getElementById('details-btn-wrap').style.display = CFG.showDetails === false ? 'none' : '';
   show('result-student');
 }
 
